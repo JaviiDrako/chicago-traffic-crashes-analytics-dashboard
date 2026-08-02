@@ -1,0 +1,12 @@
+traffic_crashes:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: YOUR_GCP_PROJECT_ID
+      dataset: traffic_crashes_dev
+      location: US
+      threads: 4
+      timeout_seconds: 300
+      priority: interactive
