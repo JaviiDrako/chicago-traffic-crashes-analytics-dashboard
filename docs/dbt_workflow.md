@@ -27,6 +27,10 @@ stg_traffic_crashes
 - Crash month is between 1 and 12.
 - Derived flags contain only boolean values.
 
+## Status
+
+The dbt project is scaffolded, but the raw BigQuery table and dbt models have not been built yet. The next implementation branch will add the source declaration, staging model and first data tests.
+
 ## Local configuration
 
 Install the BigQuery adapter in an isolated environment:
@@ -37,7 +41,7 @@ python -m pip install dbt-core dbt-bigquery
 
 Copy `dbt/profiles.yml.example` to the standard local dbt profiles directory and replace placeholders locally. The real `profiles.yml` is ignored by Git.
 
-The first commands after configuration will be:
+After the BigQuery raw table and profile are configured, the first commands will be:
 
 ```bash
 dbt debug

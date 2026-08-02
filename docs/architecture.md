@@ -1,6 +1,6 @@
 # Analytics architecture
 
-## Target flow
+## Current and target flow
 
 ```text
 Chicago Traffic Crashes CSV
@@ -22,11 +22,19 @@ dbt analytical marts
  notebook    dashboard
 ```
 
+The first three infrastructure steps are now complete: the project exists, the raw CSV is in Cloud Storage, and the three BigQuery datasets have been created. The raw BigQuery table, dbt models and Power BI connection are still pending.
+
 ## Layer responsibilities
 
 ### Raw layer
 
 The raw table preserves the source structure as closely as possible. It is used for traceability and reloads, not for direct dashboard consumption.
+
+The current raw file is stored at:
+
+```text
+gs://traffic-crashes-warehouse-raw/raw/Chicago_Traffic_Crashes.csv
+```
 
 ### Staging layer
 
@@ -35,6 +43,8 @@ Staging models standardize data types, parse timestamps, normalize null values a
 ### Analytical marts
 
 Marts contain reusable business-facing datasets such as one row per crash, daily summaries and risk-factor comparisons. Power BI should consume marts rather than repeat the cleaning logic.
+
+The planned dimensional model will use a central `fct_crashes` table at one-row-per-crash grain, supported by dimensions such as `dim_date`, `dim_weather`, `dim_lighting` and `dim_severity`. Summary marts will be added for common Power BI views.
 
 ### Python notebook
 

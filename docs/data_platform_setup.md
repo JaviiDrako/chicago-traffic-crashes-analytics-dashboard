@@ -1,27 +1,180 @@
 # Data platform setup
 
-This document describes the setup required before connecting the project to BigQuery.
+This document explains the Google Cloud foundation created for the project and the commands used to create it. It also makes clear which parts are complete and which parts will be implemented later.
 
-## User-owned setup
+## Current resources
 
-The project owner must create or select a Google Cloud project, enable billing according to their account terms, and choose a BigQuery/Cloud Storage location. The project owner also controls authentication and permissions.
+| Resource | Current value | Purpose |
+|---|---|---|
+| GCP project | `traffic-crashes-warehouse` | Billing, APIs and ownership boundary |
+| Cloud Storage bucket | `gs://traffic-crashes-warehouse-raw` | Raw CSV landing zone |
+| Raw BigQuery dataset | `traffic_crashes_raw` | Source tables loaded from the raw file |
+| Development dataset | `traffic_crashes_dev` | Temporary dbt development models |
+| Analytics dataset | `traffic_crashes_analytics` | Curated tables for Python and Power BI |
 
-Required future values:
+The CSV has been uploaded to:
 
-- GCP project ID
-- Cloud Storage bucket name
-- BigQuery location
-- BigQuery raw dataset name
-- BigQuery analytics dataset name
+```text
+gs://traffic-crashes-warehouse-raw/raw/Chicago_Traffic_Crashes.csv
+```
 
-Do not share passwords, OAuth refresh tokens or service-account JSON keys in chat or Git.
+The raw BigQuery table has not been created yet. That will be the next ingestion step, using an explicit schema and validation queries.
 
-## Planned ingestion
+## The three command-line tools
 
-1. Keep the source CSV unchanged in a local or Cloud Storage landing zone.
-2. Load the file into a BigQuery raw table with an explicit schema where practical.
-3. Validate row counts, columns, nulls, date parsing and key uniqueness.
-4. Transform the raw table with dbt models.
-5. Expose curated marts to the notebook and Power BI.
+### `gcloud`
 
-The CSV will not be committed to Git because it is a large raw asset.
+`gcloud` is the general Google Cloud CLI. It manages project configuration, authentication, APIs and many Google Cloud resources.
+
+Examples:
+
+```bash
+gcloud auth login
+gcloud config set project traffic-crashes-warehouse
+gcloud services enable bigquery.googleapis.com storage.googleapis.com
+```
+
+These commands do not query the crash data. They configure access to Google Cloud and enable services for the selected project.
+
+### `gcloud storage`
+
+`gcloud storage` manages objects and buckets in Cloud Storage. A bucket is object storage: it keeps files such as CSVs, rather than tables that are queried with SQL.
+
+```bash
+gcloud storage ls -l \
+  gs://traffic-crashes-warehouse-raw/raw/
+```
+
+The `gs://` prefix identifies a Cloud Storage URI. The `-l` option displays details such as file size and timestamp.
+
+### `bq`
+
+`bq` is the BigQuery command-line tool. It creates datasets, loads tables and executes BigQuery SQL.
+
+```bash
+bq ls --project_id=traffic-crashes-warehouse
+```
+
+This lists BigQuery datasets. It does not list Cloud Storage files.
+
+## Authentication explained
+
+Two local authentication commands are useful during development:
+
+```bash
+gcloud auth login
+```
+
+This authenticates the Google Cloud CLI itself through a browser login.
+
+```bash
+gcloud auth application-default login
+```
+
+This creates Application Default Credentials (ADC), which Google Cloud client libraries, dbt and Python tools can use locally. These credentials belong to the local development environment and must not be committed to Git.
+
+The quota project should match the project being used:
+
+```bash
+gcloud auth application-default set-quota-project traffic-crashes-warehouse
+```
+
+The quota project tells Google which project should receive quota attribution for API calls made with the local ADC credentials.
+
+## Project configuration
+
+```bash
+gcloud config set project traffic-crashes-warehouse
+```
+
+This changes the active project for future `gcloud` commands. It does not create a project and does not move data.
+
+Check it with:
+
+```bash
+gcloud config get-value project
+```
+
+## Enabling APIs
+
+```bash
+gcloud services enable \
+  bigquery.googleapis.com \
+  storage.googleapis.com
+```
+
+An API is the service interface that allows commands and applications to use a Google Cloud product. Enabling an API makes the product available to the project; it does not create a bucket, dataset or table by itself.
+
+## Cloud Storage bucket creation
+
+The bucket is the landing zone for the unchanged source file:
+
+```bash
+GCP_PROJECT_ID="traffic-crashes-warehouse"
+GCP_LOCATION="US"
+GCS_BUCKET_NAME="traffic-crashes-warehouse-raw"
+
+gcloud storage buckets create "gs://${GCS_BUCKET_NAME}" \
+  --project="${GCP_PROJECT_ID}" \
+  --location="${GCP_LOCATION}" \
+  --default-storage-class=STANDARD \
+  --uniform-bucket-level-access
+```
+
+Important concepts:
+
+- Bucket names are globally unique.
+- A bucket location is selected at creation time.
+- `STANDARD` is appropriate for a dataset that will be accessed during development.
+- Uniform bucket-level access centralizes permissions at the bucket level.
+
+## Uploading the raw file
+
+```bash
+gcloud storage cp \
+  Chicago_Traffic_Crashes.csv \
+  "gs://${GCS_BUCKET_NAME}/raw/Chicago_Traffic_Crashes.csv"
+```
+
+`cp` copies the local file to Cloud Storage. The `raw/` part is an object prefix used to organize files; it is not a separate folder resource.
+
+Verify the upload:
+
+```bash
+gcloud storage ls -l "gs://${GCS_BUCKET_NAME}/raw/"
+```
+
+## BigQuery dataset creation
+
+A BigQuery dataset is a logical container for tables and views. The three datasets separate responsibilities:
+
+```bash
+bq --location="${GCP_LOCATION}" mk \
+  --dataset \
+  --description="Raw source data for Chicago traffic crashes" \
+  "${GCP_PROJECT_ID}:traffic_crashes_raw"
+
+bq --location="${GCP_LOCATION}" mk \
+  --dataset \
+  --description="Development datasets generated by dbt" \
+  "${GCP_PROJECT_ID}:traffic_crashes_dev"
+
+bq --location="${GCP_LOCATION}" mk \
+  --dataset \
+  --description="Curated analytics datasets for Python and Power BI" \
+  "${GCP_PROJECT_ID}:traffic_crashes_analytics"
+```
+
+The syntax `project:dataset` identifies a dataset in a specific GCP project. The dataset location should be compatible with the Cloud Storage location because BigQuery load jobs require compatible locations.
+
+## What happens next
+
+The next ingestion branch will:
+
+1. Define the BigQuery schema.
+2. Load the CSV from Cloud Storage into `traffic_crashes_raw.raw_traffic_crashes`.
+3. Compare source and destination row counts.
+4. Check column names, data types, nulls and key uniqueness.
+5. Create the first dbt source definition.
+
+Only after those checks pass will we start building staging models and analytical marts.
