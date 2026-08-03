@@ -36,7 +36,8 @@ The object is the unchanged source snapshot. Cloud Storage is being used as the 
 - BigQuery datasets: created.
 - Raw schema and ingestion scripts: implemented.
 - Raw BigQuery table: created and validated.
-- dbt models and tests: pending.
+- dbt staging view: created in `traffic_crashes_dev` and validated.
+- dbt analytical marts and additional models/tests: pending.
 - Power BI connection: pending.
 
 ## Location note
