@@ -90,6 +90,54 @@ Verify them:
 bq ls --project_id=traffic-crashes-warehouse
 ```
 
-## 7. Deliberate stopping point
+## 7. Configure the ingestion scripts
 
-Do not create the raw table manually using schema autodetection. The next branch will define an explicit schema, load the source file and validate the result. This makes the ingestion reproducible and easier to explain in the portfolio.
+From the repository root, create the private local configuration:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and verify the project, US location, bucket object path, raw
+dataset, raw table name and expected row count. The expected row count belongs
+to the current CSV snapshot; change it if a different snapshot is deliberately
+uploaded. Do not add `.env` to Git.
+
+The committed `.env.example` is shell syntax rather than a dotenv-only format:
+each setting uses `export` so that `source .env` makes the variables available
+to the scripts and to the `bq` commands they run.
+
+## 8. Load and validate the raw table
+
+Run the complete flow:
+
+```bash
+bash scripts/load_raw_bigquery.sh
+```
+
+The script performs these actions:
+
+1. Sources `.env` and checks that the required variables exist.
+2. Resolves the explicit schema file.
+3. Runs `bq load` against the `gs://` object.
+4. Skips the CSV header and rejects malformed rows with `--max_bad_records=0`.
+5. Replaces the same raw table when the load succeeds.
+6. Calls the read-only validation script.
+
+To validate an already-loaded table without loading it again:
+
+```bash
+bash scripts/validate_raw_bigquery.sh
+```
+
+The validation script renders the SQL placeholders with the identifiers in
+`.env`, then calls `bq query --use_legacy_sql=false`. The shell coordinates the
+execution; BigQuery performs the scans and calculations. The checks do not
+transform or delete raw records.
+
+## 9. Deliberate boundary before dbt
+
+The raw table and its validation output are now the handoff point for the next
+branch. Keep ingestion concerns separate from dbt transformations: dbt should
+read this raw source, create typed staging models and apply cleaning rules
+without modifying the raw table.

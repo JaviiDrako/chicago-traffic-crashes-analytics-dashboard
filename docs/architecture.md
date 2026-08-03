@@ -22,7 +22,10 @@ dbt analytical marts
  notebook    dashboard
 ```
 
-The first three infrastructure steps are now complete: the project exists, the raw CSV is in Cloud Storage, and the three BigQuery datasets have been created. The raw BigQuery table, dbt models and Power BI connection are still pending.
+The project, Cloud Storage landing zone, BigQuery datasets and raw BigQuery
+table are now configured. The raw load contains 1,079,880 rows across 49
+columns, and the ingestion validation checks passed. dbt models and the Power
+BI connection are still pending.
 
 ## Layer responsibilities
 

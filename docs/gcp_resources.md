@@ -34,10 +34,13 @@ The object is the unchanged source snapshot. Cloud Storage is being used as the 
 - Cloud Storage bucket: created.
 - Source CSV: uploaded.
 - BigQuery datasets: created.
-- Raw BigQuery table: pending.
+- Raw schema and ingestion scripts: implemented.
+- Raw BigQuery table: created and validated.
 - dbt models and tests: pending.
 - Power BI connection: pending.
 
 ## Location note
 
-The Cloud Storage bucket and BigQuery datasets must use compatible locations. Record the actual location selected in the Google Cloud Console before creating the raw table. Dataset locations cannot be changed after creation.
+The current project uses the `US` location for the Cloud Storage bucket and
+BigQuery datasets. They are compatible for the load job. Dataset locations
+cannot be changed after creation.

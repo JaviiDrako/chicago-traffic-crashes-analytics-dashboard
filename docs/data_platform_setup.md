@@ -18,7 +18,15 @@ The CSV has been uploaded to:
 gs://traffic-crashes-warehouse-raw/raw/Chicago_Traffic_Crashes.csv
 ```
 
-The raw BigQuery table has not been created yet. That will be the next ingestion step, using an explicit schema and validation queries.
+The raw BigQuery table has been loaded using the explicit schema and validation
+flow described below:
+
+```text
+traffic-crashes-warehouse:traffic_crashes_raw.raw_traffic_crashes
+Rows: 1,079,880
+Columns: 49
+Validation status: passed
+```
 
 ## The three command-line tools
 
@@ -167,14 +175,53 @@ bq --location="${GCP_LOCATION}" mk \
 
 The syntax `project:dataset` identifies a dataset in a specific GCP project. The dataset location should be compatible with the Cloud Storage location because BigQuery load jobs require compatible locations.
 
+## Reproducible raw ingestion
+
+The repository now contains a small, reproducible ingestion layer:
+
+| File | Responsibility |
+|---|---|
+| `.env.example` | Safe template for project, bucket, dataset and snapshot variables |
+| `schemas/traffic_crashes_raw.json` | Explicit 49-column BigQuery schema |
+| `scripts/load_raw_bigquery.sh` | Loads the Cloud Storage object into the raw table |
+| `scripts/validate_raw_bigquery.sh` | Runs read-only checks after the load |
+| `sql/validation/` | Standard SQL checks executed by BigQuery |
+
+Create the local configuration and run the complete load-and-check flow:
+
+```bash
+cp .env.example .env
+bash scripts/load_raw_bigquery.sh
+```
+
+The load creates or replaces:
+
+```text
+traffic-crashes-warehouse:traffic_crashes_raw.raw_traffic_crashes
+```
+
+The `--replace` behavior is deliberate: re-running the same snapshot produces
+the same table instead of appending duplicate rows. The raw layer still keeps
+the source representation. No dates are parsed, categories are renamed or
+business rules are applied at this point.
+
+After the load, the validation queries check row-count fidelity, record-ID
+uniqueness, missing key fields, basic time and coordinate ranges, the loaded
+schema and null counts for important analytical columns. The coordinate check
+also reports the source's `0,0` placeholder values separately from coordinates
+outside the expected Chicago area. A validation finding is evidence to
+investigate; it is not a reason to silently mutate the raw data. Cleaning and
+analytical typing will happen in dbt staging models.
+
+The current `EXPECTED_ROW_COUNT` in `.env.example` belongs to the CSV snapshot
+already uploaded. If a new source snapshot is intentionally uploaded, update
+that value in the private `.env` file before running validation.
+
 ## What happens next
 
-The next ingestion branch will:
+With the raw table loaded and its checks reviewed, the next branch will:
 
-1. Define the BigQuery schema.
-2. Load the CSV from Cloud Storage into `traffic_crashes_raw.raw_traffic_crashes`.
-3. Compare source and destination row counts.
-4. Check column names, data types, nulls and key uniqueness.
-5. Create the first dbt source definition.
-
-Only after those checks pass will we start building staging models and analytical marts.
+1. Register the raw table as a dbt source.
+2. Build staging models in `traffic_crashes_dev`.
+3. Parse dates, normalize categories and create typed analytical fields.
+4. Add dbt tests and documentation before creating the analytics marts.

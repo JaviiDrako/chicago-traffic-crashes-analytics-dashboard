@@ -41,6 +41,7 @@ env/
 
 .env
 .env.*
+!.env.example
 
 # ------------------------------------------------------------------------------
 # BigQuery and dbt
@@ -58,3 +59,4 @@ dbt/profiles.yml
 data/raw/
 *.json
 !dbt/profiles.yml.example
+!schemas/traffic_crashes_raw.json

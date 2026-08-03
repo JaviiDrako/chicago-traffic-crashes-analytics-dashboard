@@ -29,7 +29,9 @@ stg_traffic_crashes
 
 ## Status
 
-The dbt project is scaffolded, but the raw BigQuery table and dbt models have not been built yet. The next implementation branch will add the source declaration, staging model and first data tests.
+The dbt project is scaffolded and the raw BigQuery table is now available. The
+next implementation branch will add the source declaration, staging model and
+first data tests.
 
 ## Local configuration
 

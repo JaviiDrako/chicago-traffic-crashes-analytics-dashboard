@@ -34,6 +34,7 @@ The source CSV is intentionally excluded from Git because it is a large raw asse
 - Phase 1: data quality, derived variables and comparative risk metrics completed.
 - Phase 2: chi-square tests, Cramér's V and confidence intervals completed.
 - Warehouse foundation: repository structure and documentation initialized.
+- BigQuery ingestion: raw table loaded and validation checks passed; dbt transformations are next.
 
 ## Local notebook
 
@@ -44,3 +45,19 @@ pip install -r requirements.txt
 ```
 
 Then select the project virtual environment as the notebook kernel and run [`notebooks/chicago_traffic_crashes_analysis.ipynb`](notebooks/chicago_traffic_crashes_analysis.ipynb).
+
+## BigQuery raw ingestion
+
+The source CSV is already staged in Cloud Storage. To create the raw BigQuery
+table locally, first create a private configuration file and review its values:
+
+```bash
+cp .env.example .env
+bash scripts/load_raw_bigquery.sh
+```
+
+The loader uses the explicit schema in `schemas/traffic_crashes_raw.json` and
+automatically runs the read-only checks in `sql/validation/`. See
+[`scripts/README.md`](scripts/README.md) and
+[`docs/data_platform_setup.md`](docs/data_platform_setup.md) for the command
+explanations and troubleshooting flow.
