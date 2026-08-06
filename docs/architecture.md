@@ -22,10 +22,11 @@ dbt analytical marts
  notebook    dashboard
 ```
 
-The project, Cloud Storage landing zone, BigQuery datasets and raw BigQuery
-table are now configured. The raw load contains 1,079,880 rows across 49
-columns, and the ingestion validation checks passed. dbt models and the Power
-BI connection are still pending.
+The project, Cloud Storage landing zone, BigQuery datasets, raw BigQuery table
+and first dbt staging view are now configured. The raw load contains 1,079,880
+rows across 49 columns, and the ingestion validation checks passed. The dbt
+view preserves the same row grain, exposes 56 typed/derived columns and its 24
+tests pass. Analytical marts and the Power BI connection are still pending.
 
 ## Layer responsibilities
 
@@ -41,7 +42,11 @@ gs://traffic-crashes-warehouse-raw/raw/Chicago_Traffic_Crashes.csv
 
 ### Staging layer
 
-Staging models standardize data types, parse timestamps, normalize null values and expose consistent column names.
+The current `stg_traffic_crashes` view standardizes data types, parses local
+date-times, normalizes null values, converts source flags to booleans, handles
+the source `0,0` coordinate placeholder and exposes consistent column names.
+It remains at one row per crash record and is materialized in
+`traffic_crashes_dev`.
 
 ### Analytical marts
 

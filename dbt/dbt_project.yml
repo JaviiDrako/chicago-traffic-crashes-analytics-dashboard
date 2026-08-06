@@ -10,9 +10,12 @@ test-paths: ["tests"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
+clean-targets:
+  - "target"
+  - "dbt_packages"
+  - "logs"
+
 models:
   traffic_crashes:
     staging:
       +materialized: view
-    marts:
-      +materialized: table

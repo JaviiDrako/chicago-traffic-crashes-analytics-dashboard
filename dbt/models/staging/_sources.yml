@@ -1,0 +1,53 @@
+version: 2
+
+sources:
+  - name: traffic_crashes_raw
+    description: >-
+      Source layer for the Chicago Traffic Crashes dataset. The table is loaded
+      from the CSV snapshot in Cloud Storage and is intentionally preserved as
+      an auditable input for downstream transformations.
+    database: "{{ target.project }}"
+    schema: traffic_crashes_raw
+    tables:
+      - name: raw_traffic_crashes
+        description: >-
+          One row per reported traffic crash in the current Chicago dataset
+          snapshot. Source column names remain uppercase and source dates are
+          stored as text in this raw layer.
+        config:
+          meta:
+            grain: one row per crash record
+            owner: data-engineering
+            source_system: City of Chicago data portal
+        columns:
+          - name: CRASH_RECORD_ID
+            description: Stable identifier assigned to the crash record.
+            tests:
+              - not_null
+              - unique
+          - name: CRASH_DATE
+            description: Crash date and local time as received from the CSV.
+          - name: DATE_POLICE_NOTIFIED
+            description: Date and local time when police were notified.
+          - name: CRASH_TYPE
+            description: High-level outcome classification for the crash.
+          - name: WEATHER_CONDITION
+            description: Weather condition reported for the crash.
+          - name: LIGHTING_CONDITION
+            description: Lighting condition reported for the crash.
+          - name: MOST_SEVERE_INJURY
+            description: Most severe injury category recorded for the crash.
+          - name: INJURIES_TOTAL
+            description: Total number of injuries recorded for the crash.
+          - name: CRASH_HOUR
+            description: Hour of the crash on a 0 to 23 scale.
+          - name: CRASH_DAY_OF_WEEK
+            description: Day of week encoded from 1 through 7 by the source.
+          - name: CRASH_MONTH
+            description: Month encoded from 1 through 12 by the source.
+          - name: LATITUDE
+            description: Latitude supplied by the source geocoding process.
+          - name: LONGITUDE
+            description: Longitude supplied by the source geocoding process.
+          - name: LOCATION
+            description: WKT point representation supplied by the source.

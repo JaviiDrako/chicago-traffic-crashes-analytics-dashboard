@@ -34,7 +34,8 @@ The source CSV is intentionally excluded from Git because it is a large raw asse
 - Phase 1: data quality, derived variables and comparative risk metrics completed.
 - Phase 2: chi-square tests, Cramér's V and confidence intervals completed.
 - Warehouse foundation: repository structure and documentation initialized.
-- BigQuery ingestion: raw table loaded and validation checks passed; dbt transformations are next.
+- BigQuery ingestion: raw table loaded and validation checks passed.
+- dbt staging: source, typed staging view, documentation and 24 passing tests completed.
 
 ## Local notebook
 
@@ -61,3 +62,11 @@ automatically runs the read-only checks in `sql/validation/`. See
 [`scripts/README.md`](scripts/README.md) and
 [`docs/data_platform_setup.md`](docs/data_platform_setup.md) for the command
 explanations and troubleshooting flow.
+
+The dbt staging workflow is documented in
+[`docs/dbt_workflow.md`](docs/dbt_workflow.md). Install its adapter separately
+when working with the warehouse:
+
+```bash
+pip install -r requirements-dbt.txt
+```

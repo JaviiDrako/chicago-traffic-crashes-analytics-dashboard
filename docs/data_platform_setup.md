@@ -219,9 +219,12 @@ that value in the private `.env` file before running validation.
 
 ## What happens next
 
-With the raw table loaded and its checks reviewed, the next branch will:
+The dbt staging branch has now completed the source declaration, typed view,
+tests and model documentation. The next branch will:
 
-1. Register the raw table as a dbt source.
-2. Build staging models in `traffic_crashes_dev`.
-3. Parse dates, normalize categories and create typed analytical fields.
-4. Add dbt tests and documentation before creating the analytics marts.
+1. Add intermediate transformations where a reusable business rule needs its
+   own model.
+2. Build the one-row-per-crash fact model in `traffic_crashes_analytics`.
+3. Add date, severity and risk-factor dimensions or marts where they improve
+   Power BI reuse.
+4. Add mart-level tests, metrics and a documented handoff for the dashboard.

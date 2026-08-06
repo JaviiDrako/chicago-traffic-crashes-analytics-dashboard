@@ -1,0 +1,210 @@
+version: 2
+
+models:
+  - name: stg_traffic_crashes
+    description: >-
+      Clean, typed and analysis-ready representation of the raw crash table.
+      The model keeps one row per crash record, standardizes names to
+      snake_case, parses local date-times, converts Y/N indicators to booleans,
+      turns blank strings into NULL and treats the source 0,0 coordinate pair as
+      missing. It does not aggregate crashes or apply business-facing metrics.
+    config:
+      meta:
+        grain: one row per crash_record_id
+        layer: staging
+        downstream_consumers: dbt marts, Python analysis and Power BI extracts
+    columns:
+      - name: crash_record_id
+        description: Stable identifier for the crash record.
+        tests:
+          - not_null
+          - unique
+      - name: crash_date_estimated_flag
+        description: Whether the source marks the crash date as estimated.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: crash_datetime
+        description: Local crash date and time parsed from the source text.
+        tests:
+          - not_null
+      - name: crash_date
+        description: Calendar date derived from crash_datetime.
+        tests:
+          - not_null
+      - name: crash_year
+        description: Calendar year derived from crash_datetime.
+      - name: crash_month
+        description: Source month number, expected to range from 1 through 12.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+                quote: false
+      - name: crash_month_name
+        description: English month name derived from crash_date.
+      - name: crash_day_of_week
+        description: Source day-of-week number, where 1 is Sunday and 7 is Saturday.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5, 6, 7]
+                quote: false
+      - name: crash_day_name
+        description: English day name derived from crash_date.
+      - name: crash_hour
+        description: Source crash hour on a 0 through 23 scale.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+                quote: false
+      - name: posted_speed_limit
+        description: Posted speed limit recorded at the crash location.
+      - name: traffic_control_device
+        description: Traffic control device present at the crash location.
+      - name: device_condition
+        description: Condition of the reported traffic control device.
+      - name: weather_condition
+        description: Weather condition reported for the crash.
+      - name: lighting_condition
+        description: Lighting condition reported for the crash.
+      - name: first_crash_type
+        description: First harmful event or crash type recorded.
+      - name: trafficway_type
+        description: Type of roadway where the crash occurred.
+      - name: lane_count
+        description: Number of lanes recorded for the roadway.
+      - name: alignment
+        description: Roadway alignment at the crash location.
+      - name: roadway_surface_condition
+        description: Surface condition of the roadway.
+      - name: road_defect
+        description: Defect condition reported for the roadway.
+      - name: report_type
+        description: Type of crash report submitted.
+      - name: crash_type
+        description: High-level classification of the crash outcome.
+      - name: intersection_related_flag
+        description: Whether the source marks the crash as intersection-related.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: not_right_of_way_flag
+        description: Whether the source marks a right-of-way violation.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: hit_and_run_flag
+        description: Whether the source marks the crash as hit-and-run.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: damage
+        description: Reported damage category.
+      - name: police_notified_datetime
+        description: Local date and time when police were notified.
+      - name: primary_contributory_cause
+        description: Primary contributory cause reported for the crash.
+      - name: secondary_contributory_cause
+        description: Secondary contributory cause reported for the crash.
+      - name: street_number
+        description: Street number associated with the crash location.
+      - name: street_direction
+        description: Directional prefix or suffix for the street.
+      - name: street_name
+        description: Street name associated with the crash location.
+      - name: beat_of_occurrence
+        description: Police beat associated with the crash.
+      - name: photos_taken_flag
+        description: Whether photos were recorded for the crash.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: statements_taken_flag
+        description: Whether statements were recorded for the crash.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: dooring_flag
+        description: Whether the crash is marked as a dooring incident.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: work_zone_flag
+        description: Whether the crash occurred in or was related to a work zone.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: work_zone_type
+        description: Type of work zone reported for the crash.
+      - name: workers_present_flag
+        description: Whether workers were present in the work zone.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: unit_count
+        description: Number of units involved in the crash.
+      - name: most_severe_injury
+        description: Most severe injury category recorded for the crash.
+      - name: injuries_total
+        description: Total number of injuries recorded for the crash.
+      - name: injuries_fatal
+        description: Number of fatal injuries recorded for the crash.
+      - name: injuries_incapacitating
+        description: Number of incapacitating injuries recorded for the crash.
+      - name: injuries_non_incapacitating
+        description: Number of non-incapacitating injuries recorded for the crash.
+      - name: injuries_reported_not_evident
+        description: Number of injuries reported but not visibly evident.
+      - name: injuries_no_indication
+        description: Number of people with no indication of injury.
+      - name: injuries_unknown
+        description: Number of injuries with an unknown classification.
+      - name: idot_control_number
+        description: Illinois Department of Transportation control number.
+      - name: latitude
+        description: Latitude after converting the source 0,0 placeholder to NULL.
+      - name: longitude
+        description: Longitude after converting the source 0,0 placeholder to NULL.
+      - name: location_wkt
+        description: Source location represented as a WKT point string.
+      - name: has_coordinates
+        description: Whether both latitude and longitude are available.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: is_injury_crash
+        description: Derived flag indicating whether total injuries are greater than zero.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: is_fatal_crash
+        description: Derived flag indicating whether fatal injuries are greater than zero.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
