@@ -75,7 +75,11 @@ custom dbt schema-name macro keeps these models in the exact
 
 ### Python notebook
 
-Python is used for exploratory analysis, statistical inference and later predictive modelling. It should consume the curated dataset or analytical extracts instead of defining a second, conflicting transformation pipeline.
+Python is used for exploratory analysis, statistical inference and later
+predictive modelling. The notebook now consumes a narrow query over the Gold
+fact table joined to the weather, lighting and severity dimensions. It performs
+lightweight contract checks and analysis-specific feature engineering instead
+of defining a second raw-data cleaning pipeline.
 
 ### Power BI
 
