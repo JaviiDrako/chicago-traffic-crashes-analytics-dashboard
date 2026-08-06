@@ -36,6 +36,10 @@ The source CSV is intentionally excluded from Git because it is a large raw asse
 - Warehouse foundation: repository structure and documentation initialized.
 - BigQuery ingestion: raw table loaded and validation checks passed.
 - dbt staging: source, typed staging view, documentation and 24 passing tests completed.
+- dbt Gold layer: star schema with four dimensions, one crash fact table and
+  three Power BI-ready marts in `traffic_crashes_analytics`.
+- dbt validation: full build completed successfully with 9 models and 80
+  passing data tests.
 
 ## Local notebook
 

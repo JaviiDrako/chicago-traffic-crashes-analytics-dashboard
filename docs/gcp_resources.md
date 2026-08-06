@@ -37,7 +37,13 @@ The object is the unchanged source snapshot. Cloud Storage is being used as the 
 - Raw schema and ingestion scripts: implemented.
 - Raw BigQuery table: created and validated.
 - dbt staging view: created in `traffic_crashes_dev` and validated.
-- dbt analytical marts and additional models/tests: pending.
+- dbt Gold star schema: four dimensions and one fact table in
+  `traffic_crashes_analytics`.
+- dbt analytical marts: daily, risk-factor and severity summary tables in
+  `traffic_crashes_analytics`.
+- dbt model documentation and data-quality tests: implemented for staging and
+  Gold models.
+- Latest full dbt build: 9 models and 80 data tests passed.
 - Power BI connection: pending.
 
 ## Location note
