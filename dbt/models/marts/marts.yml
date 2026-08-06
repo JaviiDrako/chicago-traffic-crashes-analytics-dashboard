@@ -1,0 +1,298 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: >-
+      Calendar dimension generated from the dates observed in the crash
+      source. It provides reusable calendar attributes for time analysis and
+      gives the fact table a stable date key.
+    config:
+      meta:
+        layer: gold
+        grain: one row per observed calendar date
+        role: dimension
+    columns:
+      - name: date_key
+        description: Integer date key in YYYYMMDD format.
+        tests:
+          - not_null
+          - unique
+      - name: full_date
+        description: Calendar date represented by the dimension row.
+        tests:
+          - not_null
+          - unique
+      - name: year
+        description: Calendar year.
+      - name: quarter
+        description: Calendar quarter from 1 through 4.
+      - name: month
+        description: Calendar month from 1 through 12.
+      - name: month_name
+        description: English calendar month name.
+      - name: week_of_year
+        description: BigQuery week number for the calendar date.
+      - name: day_of_month
+        description: Day number within the month.
+      - name: day_of_week
+        description: BigQuery day-of-week number, where Sunday is 1.
+      - name: day_name
+        description: English day name.
+      - name: is_weekend
+        description: Whether the date falls on Saturday or Sunday.
+
+  - name: dim_weather
+    description: >-
+      Distinct weather conditions with a stable deterministic key and a
+      business-friendly grouping for dashboard filters.
+    config:
+      meta:
+        layer: gold
+        grain: one row per normalized weather condition
+        role: dimension
+    columns:
+      - name: weather_key
+        description: Deterministic BigQuery fingerprint used as the weather foreign key.
+        tests:
+          - not_null
+          - unique
+      - name: weather_condition
+        description: Normalized source weather label; missing values become Unknown.
+        tests:
+          - not_null
+          - unique
+      - name: weather_group
+        description: Broader weather category used for analysis.
+
+  - name: dim_lighting
+    description: >-
+      Distinct lighting conditions with a stable deterministic key and a
+      broader daylight, darkness or transition grouping.
+    config:
+      meta:
+        layer: gold
+        grain: one row per normalized lighting condition
+        role: dimension
+    columns:
+      - name: lighting_key
+        description: Deterministic BigQuery fingerprint used as the lighting foreign key.
+        tests:
+          - not_null
+          - unique
+      - name: lighting_condition
+        description: Normalized source lighting label; missing values become Unknown.
+        tests:
+          - not_null
+          - unique
+      - name: lighting_group
+        description: Broader lighting category used for analysis.
+
+  - name: dim_severity
+    description: >-
+      Distinct most-severe-injury labels classified into analytical severity
+      groups and an explicit ranking for ordered visualizations.
+    config:
+      meta:
+        layer: gold
+        grain: one row per normalized severity label
+        role: dimension
+    columns:
+      - name: severity_key
+        description: Deterministic BigQuery fingerprint used as the severity foreign key.
+        tests:
+          - not_null
+          - unique
+      - name: severity_label
+        description: Normalized source injury-severity label; missing values become Unknown.
+        tests:
+          - not_null
+          - unique
+      - name: severity_group
+        description: Business-friendly severity category.
+      - name: severity_rank
+        description: Numeric ordering where fatal injury is the most severe known category.
+      - name: is_fatal_severity
+        description: Whether the label represents a fatal outcome.
+      - name: is_injury_severity
+        description: Whether the label indicates an injury rather than no injury.
+
+  - name: fct_traffic_crashes
+    description: >-
+      Central fact table at one row per crash_record_id. It keeps additive
+      crash and injury measures, analytical flags and foreign keys to the
+      reusable date, weather, lighting and severity dimensions.
+    config:
+      meta:
+        layer: gold
+        grain: one row per crash_record_id
+        role: fact
+        downstream_consumers: Power BI, Python analysis and analytical SQL
+    columns:
+      - name: crash_record_id
+        description: Stable source identifier for the crash.
+        tests:
+          - not_null
+          - unique
+      - name: date_key
+        description: Foreign key to dim_date.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: weather_key
+        description: Foreign key to dim_weather.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_weather')
+                field: weather_key
+      - name: lighting_key
+        description: Foreign key to dim_lighting.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_lighting')
+                field: lighting_key
+      - name: severity_key
+        description: Foreign key to dim_severity.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_severity')
+                field: severity_key
+      - name: crash_datetime
+        description: Local date and time of the crash.
+        tests:
+          - not_null
+      - name: crash_date
+        description: Calendar date of the crash.
+        tests:
+          - not_null
+      - name: injuries_total
+        description: Total injuries, with missing source values represented as zero.
+        tests:
+          - not_null
+      - name: injuries_fatal
+        description: Fatal injuries, with missing source values represented as zero.
+        tests:
+          - not_null
+      - name: is_injury_crash
+        description: Whether the crash has at least one recorded injury.
+        tests:
+          - not_null
+      - name: is_fatal_crash
+        description: Whether the crash has at least one recorded fatal injury.
+        tests:
+          - not_null
+      - name: crash_count
+        description: Constant additive measure equal to one at the fact grain.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1]
+                quote: false
+
+  - name: mart_crashes_daily
+    description: >-
+      Daily aggregate for time-series reporting. Each row represents one date
+      observed in the fact table and contains crash, injury and operational
+      summary measures.
+    config:
+      meta:
+        layer: gold
+        grain: one row per crash date
+        role: aggregate mart
+        downstream_consumers: Power BI time-series visuals
+    columns:
+      - name: date_key
+        description: Foreign key to dim_date and unique key at this mart grain.
+        tests:
+          - not_null
+          - unique
+      - name: full_date
+        description: Date represented by the daily aggregate.
+        tests:
+          - not_null
+      - name: crash_count
+        description: Number of crashes recorded on the date.
+        tests:
+          - not_null
+      - name: injury_crash_count
+        description: Number of crashes with one or more injuries.
+        tests:
+          - not_null
+      - name: fatal_crash_count
+        description: Number of crashes with one or more fatal injuries.
+        tests:
+          - not_null
+      - name: total_injuries
+        description: Sum of recorded injuries for the date.
+        tests:
+          - not_null
+
+  - name: mart_risk_factors
+    description: >-
+      Combined weather and lighting aggregate for comparing crash volume,
+      injury rates and fatal crash rates across environmental conditions.
+    config:
+      meta:
+        layer: gold
+        grain: one row per weather and lighting combination
+        role: aggregate mart
+        downstream_consumers: Power BI risk-factor analysis
+    columns:
+      - name: weather_key
+        description: Foreign key to dim_weather.
+        tests:
+          - not_null
+      - name: lighting_key
+        description: Foreign key to dim_lighting.
+        tests:
+          - not_null
+      - name: crash_count
+        description: Number of crashes in the weather and lighting combination.
+        tests:
+          - not_null
+      - name: injury_crash_rate
+        description: Injury-crash count divided by crash count.
+        tests:
+          - not_null
+      - name: fatal_crash_rate
+        description: Fatal-crash count divided by crash count.
+        tests:
+          - not_null
+
+  - name: mart_severity_summary
+    description: >-
+      Severity-level aggregate for ranking outcomes, showing crash share and
+      injury totals by most-severe-injury category.
+    config:
+      meta:
+        layer: gold
+        grain: one row per severity label
+        role: aggregate mart
+        downstream_consumers: Power BI severity overview
+    columns:
+      - name: severity_key
+        description: Foreign key to dim_severity and unique key at this mart grain.
+        tests:
+          - not_null
+          - unique
+      - name: crash_count
+        description: Number of crashes assigned to the severity label.
+        tests:
+          - not_null
+      - name: crash_share
+        description: Proportion of all fact crashes represented by the label.
+        tests:
+          - not_null
+      - name: total_injuries
+        description: Sum of recorded injuries for the severity label.
+        tests:
+          - not_null
