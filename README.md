@@ -36,6 +36,10 @@ The source CSV is intentionally excluded from Git because it is a large raw asse
 - Warehouse foundation: repository structure and documentation initialized.
 - BigQuery ingestion: raw table loaded and validation checks passed.
 - dbt staging: source, typed staging view, documentation and 24 passing tests completed.
+- dbt Gold layer: star schema with four dimensions, one crash fact table and
+  three Power BI-ready marts in `traffic_crashes_analytics`.
+- dbt validation: full build completed successfully with 9 models and 80
+  passing data tests.
 
 ## Local notebook
 
@@ -45,7 +49,17 @@ Install the analytical dependencies with:
 pip install -r requirements.txt
 ```
 
-Then select the project virtual environment as the notebook kernel and run [`notebooks/chicago_traffic_crashes_analysis.ipynb`](notebooks/chicago_traffic_crashes_analysis.ipynb).
+Then authenticate with Google Application Default Credentials, select the
+project virtual environment as the notebook kernel and run
+[`notebooks/chicago_traffic_crashes_analysis.ipynb`](notebooks/chicago_traffic_crashes_analysis.ipynb):
+
+```bash
+gcloud auth application-default login
+```
+
+The notebook now reads a narrow analytical extract from the BigQuery Gold
+layer. It does not reload or clean the raw CSV; those responsibilities belong
+to the ingestion and dbt workflows.
 
 ## BigQuery raw ingestion
 

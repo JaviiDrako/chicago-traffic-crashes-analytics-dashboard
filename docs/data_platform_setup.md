@@ -219,12 +219,16 @@ that value in the private `.env` file before running validation.
 
 ## What happens next
 
-The dbt staging branch has now completed the source declaration, typed view,
-tests and model documentation. The next branch will:
+The dbt staging branch completed the source declaration, typed view, tests and
+model documentation. The analytics-marts branch now extends that workflow with
+the Gold star schema:
 
-1. Add intermediate transformations where a reusable business rule needs its
-   own model.
-2. Build the one-row-per-crash fact model in `traffic_crashes_analytics`.
-3. Add date, severity and risk-factor dimensions or marts where they improve
-   Power BI reuse.
-4. Add mart-level tests, metrics and a documented handoff for the dashboard.
+1. Build `dim_date`, `dim_weather`, `dim_lighting` and `dim_severity`.
+2. Build the one-row-per-crash `fct_traffic_crashes` fact table.
+3. Build daily, risk-factor and severity summary marts for Power BI.
+4. Test foreign-key relationships, measures, aggregate reconciliation, rates
+   and mart grain.
+
+The next platform step is the Power BI semantic model and dashboard. dbt owns
+the reusable warehouse transformations; Power BI should own presentation-level
+measures and interactions.

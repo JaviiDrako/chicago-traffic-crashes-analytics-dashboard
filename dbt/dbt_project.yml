@@ -19,3 +19,6 @@ models:
   traffic_crashes:
     staging:
       +materialized: view
+    marts:
+      +materialized: table
+      +schema: traffic_crashes_analytics
