@@ -1,14 +1,18 @@
 # Notebooks
 
 Notebook files are organized by analytical purpose. The current notebook contains
-the original statistical analysis plus the Phase 1, Phase 2 and Phase 3 extensions.
+the original statistical analysis plus the Phase 1, Phase 2, Phase 3 and Phase 4
+extensions.
 
 The main notebook now reads a narrow analytical extract from the BigQuery Gold
 layer: `fct_traffic_crashes` joined to the weather, lighting and severity
 dimensions. Structural cleaning and typing are owned by dbt; the notebook keeps
 only lightweight contract checks, analysis-specific feature engineering and
 multivariable logistic models. Phase 3 uses scikit-learn to evaluate injury,
-severe-injury and fatality outcomes with ROC-AUC, PR-AUC and odds ratios.
+severe-injury and fatality outcomes with ROC-AUC, PR-AUC and odds ratios. Phase
+4 adds temporal trends, monthly seasonality, coordinate coverage, spatial
+density and street-level frequency analysis, followed by a documented project
+scope and roadmap.
 
 Before running locally, authenticate with Google Application Default
 Credentials:
