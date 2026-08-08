@@ -58,6 +58,35 @@ dbt/.user.yml
 # ------------------------------------------------------------------------------
 
 data/raw/
+
+# ------------------------------------------------------------------------------
+# Power BI project local state
+# ------------------------------------------------------------------------------
+
+# PBIP projects are source-controlled as text definitions. Local Desktop state,
+# caches and binary report exports are not portable project artifacts.
+**/.pbi/
+**/*.pbix
+**/*.pbit
+
+# ------------------------------------------------------------------------------
+# Temporary operating-system and editor files
+# ------------------------------------------------------------------------------
+
+**/~$*
+**/*.tmp
+**/*.bak
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ------------------------------------------------------------------------------
+# Downloaded/generated JSON outside explicitly versioned project assets
+# ------------------------------------------------------------------------------
+
 *.json
+
+# PBIP/PBIR resources and the Power BI theme are required project files.
+!bi/**/*.json
 !dbt/profiles.yml.example
 !schemas/traffic_crashes_raw.json

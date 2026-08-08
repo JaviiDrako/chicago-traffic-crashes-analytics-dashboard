@@ -1,0 +1,40 @@
+table dim_weather
+	lineageTag: 2d65c087-56eb-4815-9b1d-7c4afca0ab28
+
+	column weather_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5b4bfa63-013d-441d-8ecc-e1af49bd6736
+		summarizeBy: none
+		sourceColumn: weather_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column weather_condition
+		dataType: string
+		lineageTag: c5cfcf14-65ff-4b67-8133-c9ab6f79ae1a
+		summarizeBy: none
+		sourceColumn: weather_condition
+
+		annotation SummarizationSetBy = Automatic
+
+	column weather_group
+		dataType: string
+		lineageTag: a608d7d0-eec4-4cd2-9843-3b828caf5d6d
+		summarizeBy: none
+		sourceColumn: weather_group
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_weather = m
+		mode: import
+		source =
+				let
+				    Origen = GoogleBigQuery.Database([Implementation="2.0", UseStorageApi=true, CommandTimeout=#duration(0, 0, 30, 0), BillingProject="traffic-crashes-warehouse"]),
+				    #"traffic-crashes-warehouse_Database" = Origen{[Name="traffic-crashes-warehouse",Kind="Database"]}[Data],
+				    traffic_crashes_analytics_Schema = #"traffic-crashes-warehouse_Database"{[Name="traffic_crashes_analytics",Kind="Schema"]}[Data],
+				    dim_weather_Table = traffic_crashes_analytics_Schema{[Name="dim_weather",Kind="Table"]}[Data]
+				in
+				    dim_weather_Table
+

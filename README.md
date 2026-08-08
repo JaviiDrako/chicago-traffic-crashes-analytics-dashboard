@@ -15,10 +15,23 @@ CSV source → Cloud Storage → BigQuery raw → dbt staging/marts → Python +
 - **dbt:** SQL transformations, data tests, documentation and lineage.
 - **Power BI:** executive-facing dashboard and visual reporting.
 
+## Business Intelligence dashboard
+
+The completed Power BI report is included as a source-controlled PBIP project
+under `bi/`. It contains three synchronized pages covering executive crash
+volume, environmental risk factors, and geographic hotspots across Chicago.
+
+![Power BI Executive Overview](bi/screenshots/executive-overview.png)
+
+- [Business Intelligence layer](bi/README.md)
+- [Power BI dashboard documentation](<bi/Traffic Crashes Dashboard/README.md>)
+- [View the interactive Power BI report](https://app.powerbi.com/view?r=eyJrIjoiNWI2MjVlYTktMzhkOC00MTkyLTg1ZDEtN2NmYWI5ZDI2MTQ1IiwidCI6ImM1NWUwZDRlLTM4YmQtNDllZS1hZGE0LWIzYzQ1MWI0NWU2MyIsImMiOjR9)
+
 ## Repository structure
 
 ```text
 data/       Local data landing-zone documentation
+bi/         Power BI report and Business Intelligence documentation
 dbt/        dbt project, models, tests and configuration examples
 docs/       Architecture and setup documentation
 notebooks/  Exploratory and statistical analysis notebooks
@@ -40,6 +53,8 @@ The source CSV is intentionally excluded from Git because it is a large raw asse
   three Power BI-ready marts in `traffic_crashes_analytics`.
 - dbt validation: full build completed successfully with 9 models and 80
   passing data tests.
+- Power BI: three-page PBIP dashboard integrated under `bi/`, consuming the
+  BigQuery Gold fact table and conformed dimensions.
 
 ## Local notebook
 

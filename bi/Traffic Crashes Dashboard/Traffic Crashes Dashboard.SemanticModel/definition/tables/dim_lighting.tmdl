@@ -1,0 +1,42 @@
+table dim_lighting
+	lineageTag: a76e3a4c-1ba7-4fb9-ba46-39731e157d44
+
+	column lighting_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ba41ea3e-b806-4c44-9e31-72b32e3a69d0
+		summarizeBy: none
+		sourceColumn: lighting_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column lighting_condition
+		dataType: string
+		lineageTag: 16ee6482-7c1b-4e48-acc6-cacb9cf874e9
+		summarizeBy: none
+		sourceColumn: lighting_condition
+
+		annotation SummarizationSetBy = Automatic
+
+	column lighting_group
+		dataType: string
+		lineageTag: af905b8f-f26d-42b3-85fb-b35a0ea2c5f6
+		summarizeBy: none
+		sourceColumn: lighting_group
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_lighting = m
+		mode: import
+		source =
+				let
+				    Origen = GoogleBigQuery.Database([Implementation="2.0", UseStorageApi=true, CommandTimeout=#duration(0, 0, 30, 0), BillingProject="traffic-crashes-warehouse"]),
+				    #"traffic-crashes-warehouse_Database" = Origen{[Name="traffic-crashes-warehouse",Kind="Database"]}[Data],
+				    traffic_crashes_analytics_Schema = #"traffic-crashes-warehouse_Database"{[Name="traffic_crashes_analytics",Kind="Schema"]}[Data],
+				    dim_lighting_Table = traffic_crashes_analytics_Schema{[Name="dim_lighting",Kind="Table"]}[Data]
+				in
+				    dim_lighting_Table
+
+	annotation PBI_ResultType = Table
+

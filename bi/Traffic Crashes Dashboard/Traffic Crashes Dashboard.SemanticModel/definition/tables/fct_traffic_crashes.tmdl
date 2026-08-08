@@ -1,0 +1,594 @@
+table fct_traffic_crashes
+	lineageTag: e9288c83-d3aa-446a-992d-7e0f706be463
+
+	column crash_record_id
+		dataType: string
+		lineageTag: 3df2bef9-cc92-4f35-8b09-e798a8be0d29
+		summarizeBy: none
+		sourceColumn: crash_record_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 99bd8de4-05a8-4c68-ab45-08ba375eaf5e
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column weather_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 25a1c2be-fc8b-4880-b146-08815ca96817
+		summarizeBy: none
+		sourceColumn: weather_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column lighting_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c97777db-50f4-4fbd-a1be-9b9af6f2f312
+		summarizeBy: none
+		sourceColumn: lighting_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column severity_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8b420cc1-4605-41cc-8118-76c619d75bb4
+		summarizeBy: none
+		sourceColumn: severity_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_datetime
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e5a118f7-6c30-4983-a5f6-d52f03da7515
+		summarizeBy: none
+		sourceColumn: crash_datetime
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2b78f374-e966-4895-93b1-e5e33e0559f2
+		summarizeBy: none
+		sourceColumn: crash_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column crash_year
+		dataType: int64
+		formatString: 0
+		lineageTag: 1c6da0e7-859c-411e-9ea4-9913999474c9
+		summarizeBy: sum
+		sourceColumn: crash_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_month
+		dataType: int64
+		formatString: 0
+		lineageTag: 4985b1f8-3d99-4ce1-b15b-088b89ed9c88
+		summarizeBy: sum
+		sourceColumn: crash_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_month_name
+		dataType: string
+		lineageTag: 6951651e-f7e9-4c6c-a9dc-fdf2894e82d0
+		summarizeBy: none
+		sourceColumn: crash_month_name
+		sortByColumn: crash_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_day_of_week
+		dataType: int64
+		formatString: 0
+		lineageTag: 3cc1268d-b9dd-4a45-9f5a-9826894b1b91
+		summarizeBy: sum
+		sourceColumn: crash_day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_day_name
+		dataType: string
+		lineageTag: 558e59cb-6c40-4484-bba5-8904c222d415
+		summarizeBy: none
+		sourceColumn: crash_day_name
+		sortByColumn: crash_day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_hour
+		dataType: int64
+		formatString: 0
+		lineageTag: 34736fb1-5368-4c08-b74f-6576b7d753f3
+		summarizeBy: sum
+		sourceColumn: crash_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_type
+		dataType: string
+		lineageTag: 4b123846-6c50-4786-9170-ed6525b82283
+		summarizeBy: none
+		sourceColumn: crash_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_crash_type
+		dataType: string
+		lineageTag: 0cacc457-d8d2-4bbd-987d-610c3d1d29d9
+		summarizeBy: none
+		sourceColumn: first_crash_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column damage
+		dataType: string
+		lineageTag: 66db382d-4264-40af-bf37-43aaee055c0b
+		summarizeBy: none
+		sourceColumn: damage
+
+		annotation SummarizationSetBy = Automatic
+
+	column trafficway_type
+		dataType: string
+		lineageTag: 20e13ab3-4ea9-4e19-a632-deaa92233868
+		summarizeBy: none
+		sourceColumn: trafficway_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column traffic_control_device
+		dataType: string
+		lineageTag: 1e952dc7-84de-4d53-b946-b9cc003b4c96
+		summarizeBy: none
+		sourceColumn: traffic_control_device
+
+		annotation SummarizationSetBy = Automatic
+
+	column device_condition
+		dataType: string
+		lineageTag: 427f2562-8c5d-4958-a50b-51d3436d1364
+		summarizeBy: none
+		sourceColumn: device_condition
+
+		annotation SummarizationSetBy = Automatic
+
+	column roadway_surface_condition
+		dataType: string
+		lineageTag: 5ec967af-75ac-4840-97b4-f8d42da501f4
+		summarizeBy: none
+		sourceColumn: roadway_surface_condition
+
+		annotation SummarizationSetBy = Automatic
+
+	column road_defect
+		dataType: string
+		lineageTag: 35e7f165-413a-4274-a3b9-6519ddb63a2e
+		summarizeBy: none
+		sourceColumn: road_defect
+
+		annotation SummarizationSetBy = Automatic
+
+	column alignment
+		dataType: string
+		lineageTag: 3eac2131-f398-48db-b572-3ba276d3b559
+		summarizeBy: none
+		sourceColumn: alignment
+
+		annotation SummarizationSetBy = Automatic
+
+	column report_type
+		dataType: string
+		lineageTag: a1bd91a5-37f9-45f4-945b-e97fafec78c8
+		summarizeBy: none
+		sourceColumn: report_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column primary_contributory_cause
+		dataType: string
+		lineageTag: 50309e70-5489-4703-86af-d48110568f79
+		summarizeBy: none
+		sourceColumn: primary_contributory_cause
+
+		annotation SummarizationSetBy = Automatic
+
+	column secondary_contributory_cause
+		dataType: string
+		lineageTag: cdcff9e3-2127-4f0f-8b5a-7473c2896116
+		summarizeBy: none
+		sourceColumn: secondary_contributory_cause
+
+		annotation SummarizationSetBy = Automatic
+
+	column street_number
+		dataType: int64
+		formatString: 0
+		lineageTag: 3b217251-915b-483a-90de-3ed85571a0f9
+		summarizeBy: sum
+		sourceColumn: street_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column street_direction
+		dataType: string
+		lineageTag: cbca05c3-afbe-451a-8332-60eb05ad6376
+		summarizeBy: none
+		sourceColumn: street_direction
+
+		annotation SummarizationSetBy = Automatic
+
+	column street_name
+		dataType: string
+		lineageTag: 44292270-bf75-4378-a7f0-6c8fe817472c
+		summarizeBy: none
+		sourceColumn: street_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column beat_of_occurrence
+		dataType: int64
+		formatString: 0
+		lineageTag: 18d7ad79-470b-417f-aa4e-c581fbcf72d2
+		summarizeBy: sum
+		sourceColumn: beat_of_occurrence
+
+		annotation SummarizationSetBy = Automatic
+
+	column posted_speed_limit
+		dataType: int64
+		formatString: 0
+		lineageTag: 33cff6eb-dcde-44d0-9f1a-8f78fdce2caf
+		summarizeBy: sum
+		sourceColumn: posted_speed_limit
+
+		annotation SummarizationSetBy = Automatic
+
+	column lane_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 915e9f4e-2c67-419f-ad42-cc194c369879
+		summarizeBy: sum
+		sourceColumn: lane_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 69089af0-88ba-4e78-ad97-851ffcba9039
+		summarizeBy: sum
+		sourceColumn: unit_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column most_severe_injury
+		dataType: string
+		lineageTag: a7f046c9-4ff3-4e51-8b27-5f032143e2d6
+		summarizeBy: none
+		sourceColumn: most_severe_injury
+
+		annotation SummarizationSetBy = Automatic
+
+	column injuries_total
+		dataType: double
+		isHidden
+		lineageTag: 48daf534-fa40-4d6d-b368-a50ba1d1ee0d
+		summarizeBy: sum
+		sourceColumn: injuries_total
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column injuries_fatal
+		dataType: double
+		isHidden
+		lineageTag: fbe842f9-49b3-4fb0-990f-99f73d65b87e
+		summarizeBy: sum
+		sourceColumn: injuries_fatal
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column injuries_incapacitating
+		dataType: double
+		lineageTag: 7ca4816f-2d59-4a6c-b71c-1c5af6f4ce6a
+		summarizeBy: sum
+		sourceColumn: injuries_incapacitating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column injuries_non_incapacitating
+		dataType: double
+		lineageTag: c2c0a521-6dc1-447b-a06a-fee37e14e11f
+		summarizeBy: sum
+		sourceColumn: injuries_non_incapacitating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column injuries_reported_not_evident
+		dataType: double
+		lineageTag: a9c246f4-0e2a-4a8e-9b0b-0b9a8ae96b45
+		summarizeBy: sum
+		sourceColumn: injuries_reported_not_evident
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column injuries_no_indication
+		dataType: double
+		lineageTag: f9c77c60-1f6a-4edc-b5d1-c46f4c3044a1
+		summarizeBy: sum
+		sourceColumn: injuries_no_indication
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column injuries_unknown
+		dataType: double
+		lineageTag: 89ff34a1-a482-4645-85c9-d65692d1957c
+		summarizeBy: sum
+		sourceColumn: injuries_unknown
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column crash_date_estimated_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: b6ae09d7-3598-42d5-9ea4-2c3863b7325e
+		summarizeBy: none
+		sourceColumn: crash_date_estimated_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column intersection_related_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 28ca45fe-5420-4d15-ba9a-83f8fb084e59
+		summarizeBy: none
+		sourceColumn: intersection_related_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column not_right_of_way_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 7fb3ee2a-3d4b-4702-ac3b-41ad7898fc64
+		summarizeBy: none
+		sourceColumn: not_right_of_way_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column hit_and_run_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 6dfbf63d-33cf-4955-9289-5d52d08ec13e
+		summarizeBy: none
+		sourceColumn: hit_and_run_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column photos_taken_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 2b50bc48-077f-4757-b784-11f598712b57
+		summarizeBy: none
+		sourceColumn: photos_taken_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column statements_taken_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 16ed97b3-eb36-4725-855f-83f2d73bb1f9
+		summarizeBy: none
+		sourceColumn: statements_taken_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column dooring_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 9ae3708d-d84c-43b2-930d-612e142911a6
+		summarizeBy: none
+		sourceColumn: dooring_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column work_zone_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 476cd2c3-2cc4-4af5-bacd-0360810c948a
+		summarizeBy: none
+		sourceColumn: work_zone_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column work_zone_type
+		dataType: string
+		lineageTag: 98ce64cc-d6f2-457e-841a-04345ae14295
+		summarizeBy: none
+		sourceColumn: work_zone_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column workers_present_flag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 387357d9-4d6f-4cf2-8d80-583d64a10ca7
+		summarizeBy: none
+		sourceColumn: workers_present_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_injury_crash
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 3c168bac-b065-4a9b-9d06-907c19a20da8
+		summarizeBy: none
+		sourceColumn: is_injury_crash
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_fatal_crash
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 0752c054-bf5a-4742-a415-d45d48bbbd09
+		summarizeBy: none
+		sourceColumn: is_fatal_crash
+
+		annotation SummarizationSetBy = Automatic
+
+	column has_coordinates
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: ca8579fb-afac-427e-acb8-44b51225cb4f
+		summarizeBy: none
+		sourceColumn: has_coordinates
+
+		annotation SummarizationSetBy = Automatic
+
+	column latitude
+		dataType: double
+		lineageTag: cde76d06-0102-46c5-9ac7-ba9f1477bd41
+		summarizeBy: sum
+		sourceColumn: latitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column longitude
+		dataType: double
+		lineageTag: b8d061b1-f7aa-46ae-97b6-e50c975491f7
+		summarizeBy: sum
+		sourceColumn: longitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Rounded latitude used to aggregate mapped crashes into a reproducible two-decimal geographic grid.
+	column geo_grid_latitude =
+			VAR _Latitude = 'fct_traffic_crashes'[latitude]
+			VAR _Longitude = 'fct_traffic_crashes'[longitude]
+			RETURN
+				IF (
+					'fct_traffic_crashes'[has_coordinates]
+						&& _Latitude >= 41.60
+						&& _Latitude <= 42.10
+						&& _Longitude >= -88.00
+						&& _Longitude <= -87.40,
+					ROUND ( _Latitude, 2 )
+				)
+		dataType: double
+		isHidden
+		lineageTag: 5a5ae1e3-0b6c-4ce8-8dc7-4e8e1b28e2c1
+		summarizeBy: none
+
+	/// Rounded longitude used to aggregate mapped crashes into a reproducible two-decimal geographic grid.
+	column geo_grid_longitude =
+			VAR _Latitude = 'fct_traffic_crashes'[latitude]
+			VAR _Longitude = 'fct_traffic_crashes'[longitude]
+			RETURN
+				IF (
+					'fct_traffic_crashes'[has_coordinates]
+						&& _Latitude >= 41.60
+						&& _Latitude <= 42.10
+						&& _Longitude >= -88.00
+						&& _Longitude <= -87.40,
+					ROUND ( _Longitude, 2 )
+				)
+		dataType: double
+		isHidden
+		lineageTag: 6d2d3adf-09c3-4be5-a2ed-0c5a4b0b9b6e
+		summarizeBy: none
+
+	/// Stable identifier for each two-decimal latitude/longitude grid cell used by the Azure Maps visual.
+	column geo_grid_id =
+			VAR _Latitude = 'fct_traffic_crashes'[geo_grid_latitude]
+			VAR _Longitude = 'fct_traffic_crashes'[geo_grid_longitude]
+			RETURN
+				IF (
+					NOT ISBLANK ( _Latitude ) && NOT ISBLANK ( _Longitude ),
+					FORMAT ( _Latitude, "0.00", "en-US" ) & "|" & FORMAT ( _Longitude, "0.00", "en-US" )
+				)
+		dataType: string
+		isHidden
+		lineageTag: 88c1eb9b-1b41-46f2-83ba-4e2f3b6ef0fb
+		summarizeBy: none
+
+	column location_wkt
+		dataType: string
+		lineageTag: b5f9445c-1cea-4578-b2fa-c778e3f52a86
+		summarizeBy: none
+		sourceColumn: location_wkt
+
+		annotation SummarizationSetBy = Automatic
+
+	column idot_control_number
+		dataType: string
+		lineageTag: 4c3de5cf-3bf6-4a33-8182-d6fcb5eaf623
+		summarizeBy: none
+		sourceColumn: idot_control_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column police_notified_datetime
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 4b68cd84-6c7b-491f-a903-d88c86dc5908
+		summarizeBy: none
+		sourceColumn: police_notified_datetime
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_count
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2b906b28-f478-44e3-9428-e021584e260b
+		summarizeBy: sum
+		sourceColumn: crash_count
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fct_traffic_crashes = m
+		mode: import
+		source =
+				let
+				    Origen = GoogleBigQuery.Database([Implementation="2.0", UseStorageApi=true, CommandTimeout=#duration(0, 0, 30, 0), BillingProject="traffic-crashes-warehouse"]),
+				    #"traffic-crashes-warehouse_Database" = Origen{[Name="traffic-crashes-warehouse",Kind="Database"]}[Data],
+				    traffic_crashes_analytics_Schema = #"traffic-crashes-warehouse_Database"{[Name="traffic_crashes_analytics",Kind="Schema"]}[Data],
+				    fct_traffic_crashes_Table = traffic_crashes_analytics_Schema{[Name="fct_traffic_crashes",Kind="Table"]}[Data]
+				in
+				    fct_traffic_crashes_Table
+
