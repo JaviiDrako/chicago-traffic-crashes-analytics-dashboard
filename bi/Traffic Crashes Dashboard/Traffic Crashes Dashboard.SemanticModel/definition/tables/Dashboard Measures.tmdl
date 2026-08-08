@@ -1,0 +1,209 @@
+/// Dedicated utility table for executive dashboard business measures.
+table 'Dashboard Measures'
+	isHidden
+	lineageTag: e46e2e7e-cd74-4a5e-8c5f-0f33987542ed
+
+	/// Number of traffic crash records in the current filter context.
+	measure 'Total Crashes' = COUNTROWS ( 'fct_traffic_crashes' )
+		formatString: #,##0
+		displayFolder: Volume
+		lineageTag: fe1c6006-d6b4-4728-8a10-f3f547411783
+
+	/// Total people recorded with an injury in the current filter context.
+	measure 'Total Injuries' = SUM ( 'fct_traffic_crashes'[injuries_total] )
+		formatString: #,##0
+		displayFolder: Harm
+		lineageTag: 6cf6fff9-4c8e-4f65-a4e6-0705a6ba0269
+
+	/// Total fatal injuries recorded in the current filter context.
+	measure 'Total Fatal Injuries' = SUM ( 'fct_traffic_crashes'[injuries_fatal] )
+		formatString: #,##0
+		displayFolder: Harm
+		lineageTag: 5be91e89-18d1-4249-b803-a5c0c07fddba
+
+	/// Number of crashes with at least one recorded injury.
+	measure 'Injury Crashes' = CALCULATE ( [Total Crashes], KEEPFILTERS ( 'fct_traffic_crashes'[is_injury_crash] = TRUE () ) )
+		formatString: #,##0
+		displayFolder: Harm
+		lineageTag: 80c09a4f-edea-4764-b966-fa7b4e7e17dd
+
+	/// Number of crashes with at least one fatal injury.
+	measure 'Fatal Crashes' = CALCULATE ( [Total Crashes], KEEPFILTERS ( 'fct_traffic_crashes'[is_fatal_crash] = TRUE () ) )
+		formatString: #,##0
+		displayFolder: Harm
+		lineageTag: 29de6240-a392-4c6c-b1bd-6b184e388179
+
+	/// Share of crashes with at least one recorded injury.
+	measure 'Injury Rate' = DIVIDE ( [Injury Crashes], [Total Crashes] )
+		formatString: 0.0%
+		displayFolder: Rates
+		lineageTag: 36c99eac-2c30-4c2b-accd-c6244af3f243
+
+	/// Share of crashes with at least one fatal injury.
+	measure 'Fatality Rate' = DIVIDE ( [Fatal Crashes], [Total Crashes] )
+		formatString: 0.00%
+		displayFolder: Rates
+		lineageTag: 176d4f25-ea6d-4113-ad6e-64c25e983da9
+
+	/// Average number of recorded injuries per crash.
+	measure 'Average Injuries per Crash' = DIVIDE ( [Total Injuries], [Total Crashes] )
+		formatString: 0.00
+		displayFolder: Rates
+		lineageTag: 35e1b8d0-606e-4d31-8f8e-1d36021285a4
+
+	/// Crashes classified as fatal injury or incapacitating injury.
+	measure 'Severe or Fatal Crashes' = CALCULATE ( [Total Crashes], KEEPFILTERS ( 'dim_severity'[severity_group] IN { "Fatal injury", "Incapacitating injury" } ) )
+		formatString: #,##0
+		displayFolder: Severity
+		lineageTag: db0e01b1-e87b-4b8a-8a0f-f8ff586e0a38
+
+	/// Share of crashes classified as fatal or incapacitating injury.
+	measure 'Severe or Fatal Rate' = DIVIDE ( [Severe or Fatal Crashes], [Total Crashes] )
+		formatString: 0.0%
+		displayFolder: Severity
+		lineageTag: 71a28845-e8d0-4673-91ad-364ed2c489d3
+
+	/// Share of selected crash volume represented by the current severity group.
+	measure 'Severity Share' = DIVIDE ( [Total Crashes], CALCULATE ( [Total Crashes], ALLSELECTED ( 'dim_severity'[severity_group] ) ) )
+		formatString: 0.0%
+		displayFolder: Severity
+		lineageTag: 8b842b15-8975-45f9-ac04-02c9a71ecdc5
+
+	/// Crash volume change versus equivalent visible dates shifted twelve months earlier; designed to tolerate the source calendar's missing dates.
+	measure 'Crashes YoY %' =
+			VAR _CurrentCrashes = [Total Crashes]
+			VAR _VisibleDates = VALUES ( 'dim_date'[full_date] )
+			VAR _PreviousDates =
+			    SELECTCOLUMNS (
+			        _VisibleDates,
+			        "Prior Date", EDATE ( 'dim_date'[full_date], -12 )
+			    )
+			VAR _PreviousYearCrashes =
+			    CALCULATE (
+			        [Total Crashes],
+			        REMOVEFILTERS ( 'dim_date' ),
+			        TREATAS ( _PreviousDates, 'dim_date'[full_date] )
+			    )
+			RETURN
+			    DIVIDE ( _CurrentCrashes - _PreviousYearCrashes, _PreviousYearCrashes )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 65d58cb1-5e31-4a6d-aa2e-3aa2631056df
+
+	/// Share of selected crash volume represented by the current weather and lighting context.
+	measure 'Condition Crash Share' =
+			DIVIDE (
+			    [Total Crashes],
+			    CALCULATE (
+			        [Total Crashes],
+			        ALLSELECTED ( 'dim_weather' ),
+			        ALLSELECTED ( 'dim_lighting' )
+			    )
+			)
+		formatString: 0.0%
+		displayFolder: Rates\Environmental Context
+		lineageTag: d37607a0-7101-4f89-a6c7-88bc1c5a88d3
+
+	/// Difference between the current observed injury rate and the overall rate in the remaining filter context.
+	measure 'Injury Rate vs Overall' =
+			VAR CurrentRate = [Injury Rate]
+			VAR OverallRate =
+			    CALCULATE (
+			        [Injury Rate],
+			        REMOVEFILTERS ( 'dim_weather' ),
+			        REMOVEFILTERS ( 'dim_lighting' )
+			    )
+			RETURN
+			    CurrentRate - OverallRate
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Rates\Environmental Context
+		lineageTag: f14b60d6-052a-4a8c-b8d3-595b0c11f648
+
+	/// Difference between the current observed fatality rate and the overall rate in the remaining filter context.
+	measure 'Fatality Rate vs Overall' =
+			VAR CurrentRate = [Fatality Rate]
+			VAR OverallRate =
+			    CALCULATE (
+			        [Fatality Rate],
+			        REMOVEFILTERS ( 'dim_weather' ),
+			        REMOVEFILTERS ( 'dim_lighting' )
+			    )
+			RETURN
+			    CurrentRate - OverallRate
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Rates\Environmental Context
+		lineageTag: 4ac0335a-b614-4240-a644-2c2b2cd30a01
+
+	/// Difference between the current severe-or-fatal rate and the overall rate in the remaining filter context.
+	measure 'Severe or Fatal Rate vs Overall' =
+			VAR CurrentRate = [Severe or Fatal Rate]
+			VAR OverallRate =
+			    CALCULATE (
+			        [Severe or Fatal Rate],
+			        REMOVEFILTERS ( 'dim_weather' ),
+			        REMOVEFILTERS ( 'dim_lighting' )
+			    )
+			RETURN
+			    CurrentRate - OverallRate
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Rates\Environmental Context
+		lineageTag: 7dc3c1ae-98b2-4ea1-a68b-5622ccbf6572
+
+	/// Crash records with valid coordinates inside the Chicago analysis bounding box.
+	measure 'Mapped Crashes' =
+			CALCULATE (
+				[Total Crashes],
+				KEEPFILTERS ( 'fct_traffic_crashes'[geo_grid_id] <> BLANK () )
+			)
+		formatString: #,##0
+		displayFolder: Geography
+		lineageTag: 0bd8b4d7-e9c3-4e0d-b8ec-0f8f8e7dc0ad
+
+	/// Injury crashes among records that can be represented on the map.
+	measure 'Mapped Injury Crashes' =
+			CALCULATE (
+				[Injury Crashes],
+				KEEPFILTERS ( 'fct_traffic_crashes'[geo_grid_id] <> BLANK () )
+			)
+		formatString: #,##0
+		displayFolder: Geography
+		lineageTag: 63b39b6d-37ad-4df3-b1ef-f8bd1c849b9a
+
+	/// Fatal crashes among records that can be represented on the map.
+	measure 'Mapped Fatal Crashes' =
+			CALCULATE (
+				[Fatal Crashes],
+				KEEPFILTERS ( 'fct_traffic_crashes'[geo_grid_id] <> BLANK () )
+			)
+		formatString: #,##0
+		displayFolder: Geography
+		lineageTag: 6fc8d30e-d9cb-4312-a5b5-5b7f7d2a5ac2
+
+	/// Share of mapped crashes that involved at least one recorded injury.
+	measure 'Mapped Injury Rate' = DIVIDE ( [Mapped Injury Crashes], [Mapped Crashes] )
+		formatString: 0.0%
+		displayFolder: Geography
+		lineageTag: 5e8ca7cf-b1f0-41dd-a9a8-3e4a1b438b70
+
+	/// Share of mapped crashes that involved at least one fatal injury.
+	measure 'Mapped Fatality Rate' = DIVIDE ( [Mapped Fatal Crashes], [Mapped Crashes] )
+		formatString: 0.00%
+		displayFolder: Geography
+		lineageTag: 1c3f45e2-11c0-4c2b-a7bf-69e11a8447d9
+
+	/// Share of all selected crashes that have valid coordinates for geographic analysis.
+	measure 'Coordinate Coverage' = DIVIDE ( [Mapped Crashes], [Total Crashes] )
+		formatString: 0.0%
+		displayFolder: Geography
+		lineageTag: d70331c8-1f2d-4a8a-ae8f-4a5b6575b6db
+
+	column Value
+		isHidden
+		lineageTag: 4001ee41-b3a8-433a-ba92-26352154c9e6
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition 'Dashboard Measures' = calculated
+		mode: import
+		source = DATATABLE ( "Value", INTEGER, { { 0 } } )
+

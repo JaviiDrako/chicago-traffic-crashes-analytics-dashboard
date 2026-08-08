@@ -1,0 +1,127 @@
+table dim_date
+	lineageTag: f025897d-e1c0-43b6-8a40-26f01ed25138
+	dataCategory: Time
+
+	column date_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 11f64137-e1e9-40b3-8977-545709fffc91
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column full_date
+		dataType: dateTime
+		isUnique
+		formatString: Long Date
+		lineageTag: dc475f2a-1828-4ed4-b5b5-9644a2f1bf05
+		summarizeBy: none
+		sourceColumn: full_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: e37ea1b0-4336-4ae4-8979-ef471a416737
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 864c2ab7-6f6f-4cc8-97e9-d98f03cf5870
+		summarizeBy: none
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: b75e29ff-95c7-4c21-bdc8-a74352b09f71
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		lineageTag: c158f82f-10df-4e9c-87c0-c7c7c5963f34
+		summarizeBy: none
+		sourceColumn: month_name
+		sortByColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column week_of_year
+		dataType: int64
+		formatString: 0
+		lineageTag: b27d880f-0972-4940-92c8-f4a6427b743a
+		summarizeBy: none
+		sourceColumn: week_of_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_month
+		dataType: int64
+		formatString: 0
+		lineageTag: 5c09d4d4-cace-4c05-b2a6-856060880b5c
+		summarizeBy: none
+		sourceColumn: day_of_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_week
+		dataType: int64
+		formatString: 0
+		lineageTag: 22849c60-cf25-4c6b-a14d-efb36dd492a8
+		summarizeBy: none
+		sourceColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_name
+		dataType: string
+		lineageTag: 5a837d5c-8b95-4c7c-8792-fd9ce6f18338
+		summarizeBy: none
+		sourceColumn: day_name
+		sortByColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_weekend
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 5eb0eaee-4ceb-41fe-8193-3d5c8ddd38a2
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+		annotation SummarizationSetBy = Automatic
+
+	/// First day of each calendar month, used as the continuous monthly trend axis.
+	column 'Month Start' = DATE ( 'dim_date'[year], 'dim_date'[month], 1 )
+		dataType: dateTime
+		formatString: MMM yyyy
+		lineageTag: 531521eb-21f3-42c5-b1a4-71a5baf1a036
+		summarizeBy: none
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Origen = GoogleBigQuery.Database([Implementation="2.0", UseStorageApi=true, CommandTimeout=#duration(0, 0, 30, 0), BillingProject="traffic-crashes-warehouse"]),
+				    #"traffic-crashes-warehouse_Database" = Origen{[Name="traffic-crashes-warehouse",Kind="Database"]}[Data],
+				    traffic_crashes_analytics_Schema = #"traffic-crashes-warehouse_Database"{[Name="traffic_crashes_analytics",Kind="Schema"]}[Data],
+				    dim_date_Table = traffic_crashes_analytics_Schema{[Name="dim_date",Kind="Table"]}[Data]
+				in
+				    dim_date_Table
+
+	annotation PBI_ResultType = Table
+

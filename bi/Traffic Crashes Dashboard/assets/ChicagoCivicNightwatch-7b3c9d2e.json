@@ -1,0 +1,78 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.153.json",
+  "name": "ChicagoCivicNightwatch-7b3c9d2e.json",
+  "dataColors": ["#2FD4C6", "#F4B942", "#FF5A70", "#9B7CF6", "#4B8BF5", "#5B7FA3", "#77D6FF", "#C8A8FF"],
+  "good": "#2FD4C6",
+  "neutral": "#F4B942",
+  "bad": "#FF5A70",
+  "maximum": "#2FD4C6",
+  "center": "#4B8BF5",
+  "minimum": "#243354",
+  "null": "#69758E",
+  "background": "#0B1023",
+  "foreground": "#F3F6FA",
+  "tableAccent": "#2FD4C6",
+  "textClasses": {
+    "callout": { "fontSize": 28, "fontFace": "Segoe UI Semibold", "color": "#F3F6FA" },
+    "title": { "fontSize": 13, "fontFace": "Segoe UI Semibold", "color": "#F3F6FA" },
+    "header": { "fontSize": 11, "fontFace": "Segoe UI Semibold", "color": "#F3F6FA" },
+    "label": { "fontSize": 9, "fontFace": "Segoe UI", "color": "#9DA9C2" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "border": [{ "show": true, "color": { "solid": { "color": "#263555" } }, "radius": 12 }],
+        "dropShadow": [{ "show": true, "color": { "solid": { "color": "#000000" } }, "transparency": 78, "position": "Outer", "preset": "BottomRight" }],
+        "padding": [{ "top": 8, "bottom": 8, "left": 8, "right": 8 }],
+        "categoryAxis": [{ "gridlineStyle": "dotted", "gridlineColor": { "solid": { "color": "#2A3758" } } }],
+        "valueAxis": [{ "gridlineStyle": "dotted", "gridlineColor": { "solid": { "color": "#2A3758" } } }]
+      }
+    },
+    "cardVisual": {
+      "*": {
+        "value": [{ "bold": true, "fontColor": { "solid": { "color": "#F3F6FA" } }, "$id": "default" }],
+        "label": [{ "show": true, "fontColor": { "solid": { "color": "#9DA9C2" } }, "$id": "default" }],
+        "cardCalloutArea": [{ "paddingUniform": 4, "rectangleRoundedCurve": 8, "backgroundFillColor": { "solid": { "color": "#18223B" } }, "backgroundTransparency": 0 }],
+        "title": [{ "show": false }],
+        "spacing": [{ "verticalSpacing": -4 }]
+      }
+    },
+    "textbox": {
+      "*": {
+        "padding": [{ "top": 0, "bottom": 0, "left": 0, "right": 0 }],
+        "background": [{ "show": false }],
+        "border": [{ "show": false }]
+      }
+    },
+    "slicer": {
+      "*": {
+        "header": [{ "fontFamily": "Segoe UI Semibold", "textSize": 9, "fontColor": { "solid": { "color": "#F3F6FA" } }, "outlineStyle": 0 }],
+        "items": [{ "fontFamily": "Segoe UI", "textSize": 9, "fontColor": { "solid": { "color": "#D7DEEA" } }, "outlineStyle": 0, "padding": 2 }]
+      }
+    },
+    "lineChart": {
+      "*": {
+        "labels": [{ "show": false }],
+        "categoryAxis": [{ "show": true, "fontSize": 9, "labelColor": { "solid": { "color": "#9DA9C2" } }, "showAxisTitle": false, "gridlineShow": false }],
+        "valueAxis": [{ "show": true, "fontSize": 9, "labelColor": { "solid": { "color": "#9DA9C2" } }, "showAxisTitle": false, "gridlineStyle": "dotted", "gridlineColor": { "solid": { "color": "#2A3758" } } }],
+        "legend": [{ "show": true, "fontSize": 9, "labelColor": { "solid": { "color": "#D7DEEA" } }, "position": "Top" }]
+      }
+    },
+    "clusteredColumnChart": {
+      "*": {
+        "labels": [{ "show": false }],
+        "categoryAxis": [{ "show": true, "fontSize": 9, "labelColor": { "solid": { "color": "#9DA9C2" } }, "showAxisTitle": false, "gridlineShow": false }],
+        "valueAxis": [{ "show": true, "fontSize": 9, "labelColor": { "solid": { "color": "#9DA9C2" } }, "showAxisTitle": false, "gridlineStyle": "dotted", "gridlineColor": { "solid": { "color": "#2A3758" } } }],
+        "legend": [{ "show": false }]
+      }
+    },
+    "clusteredBarChart": {
+      "*": {
+        "labels": [{ "show": true, "fontSize": 9, "color": { "solid": { "color": "#D7DEEA" } } }],
+        "valueAxis": [{ "show": false, "gridlineShow": false, "showAxisTitle": false }],
+        "categoryAxis": [{ "show": true, "fontSize": 9, "labelColor": { "solid": { "color": "#D7DEEA" } }, "showAxisTitle": false, "innerPadding": 20, "gridlineShow": false }],
+        "legend": [{ "show": false }]
+      }
+    }
+  }
+}

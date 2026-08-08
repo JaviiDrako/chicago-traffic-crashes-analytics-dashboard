@@ -1,0 +1,23 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: es-BO
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["fct_traffic_crashes","dim_weather","dim_severity","dim_lighting","dim_date"]
+
+ref table fct_traffic_crashes
+ref table dim_weather
+ref table dim_severity
+ref table dim_lighting
+ref table dim_date
+ref table 'Dashboard Measures'
+
+ref cultureInfo es-ES
+

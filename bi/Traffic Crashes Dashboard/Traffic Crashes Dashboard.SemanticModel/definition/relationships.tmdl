@@ -1,0 +1,16 @@
+relationship AutoDetected_7fc257c0-3cfd-4991-92e7-2c06c788e9c3
+	fromColumn: fct_traffic_crashes.date_key
+	toColumn: dim_date.date_key
+
+relationship AutoDetected_34d2b10a-dc70-49db-a6ba-b4aa4e4d5267
+	fromColumn: fct_traffic_crashes.weather_key
+	toColumn: dim_weather.weather_key
+
+relationship AutoDetected_5e99bb3a-6ead-4620-9547-efc2b051dea1
+	fromColumn: fct_traffic_crashes.lighting_key
+	toColumn: dim_lighting.lighting_key
+
+relationship AutoDetected_8eac8da6-1943-4c72-90de-bd0b99ed9519
+	fromColumn: fct_traffic_crashes.severity_key
+	toColumn: dim_severity.severity_key
+

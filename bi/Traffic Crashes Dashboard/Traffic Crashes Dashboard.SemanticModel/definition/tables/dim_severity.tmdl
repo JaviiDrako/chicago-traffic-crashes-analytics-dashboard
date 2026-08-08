@@ -1,0 +1,68 @@
+table dim_severity
+	lineageTag: b56dd750-6ebc-4639-8939-3b20b7b7782c
+
+	column severity_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8e43580b-8f68-4654-8041-2e257333814b
+		summarizeBy: none
+		sourceColumn: severity_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column severity_label
+		dataType: string
+		lineageTag: f30c1442-3603-4ab5-814c-2022fc418d34
+		summarizeBy: none
+		sourceColumn: severity_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column severity_group
+		dataType: string
+		lineageTag: 4ca57b79-a2bd-44ad-af67-a97912d78644
+		summarizeBy: none
+		sourceColumn: severity_group
+		sortByColumn: severity_rank
+
+		annotation SummarizationSetBy = Automatic
+
+	column severity_rank
+		dataType: int64
+		formatString: 0
+		lineageTag: 1064f239-2dcc-4ed6-8b71-819de2a98a1f
+		summarizeBy: none
+		sourceColumn: severity_rank
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_fatal_severity
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: a1585d60-df0d-4b7e-87ef-9f241280a27e
+		summarizeBy: none
+		sourceColumn: is_fatal_severity
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_injury_severity
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 5c8103f5-fe45-4877-b635-df86e5ff7c35
+		summarizeBy: none
+		sourceColumn: is_injury_severity
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_severity = m
+		mode: import
+		source =
+				let
+				    Origen = GoogleBigQuery.Database([Implementation="2.0", UseStorageApi=true, CommandTimeout=#duration(0, 0, 30, 0), BillingProject="traffic-crashes-warehouse"]),
+				    #"traffic-crashes-warehouse_Database" = Origen{[Name="traffic-crashes-warehouse",Kind="Database"]}[Data],
+				    traffic_crashes_analytics_Schema = #"traffic-crashes-warehouse_Database"{[Name="traffic_crashes_analytics",Kind="Schema"]}[Data],
+				    dim_severity_Table = traffic_crashes_analytics_Schema{[Name="dim_severity",Kind="Table"]}[Data]
+				in
+				    dim_severity_Table
+
